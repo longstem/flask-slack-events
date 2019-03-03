@@ -76,8 +76,8 @@ Some event handlers can delay the execution of another, to avoid this you can co
             task(handler)(event)
 
 
-Signals
--------
+Subscribe to Signals
+--------------------
 
 The following signals are sended internally by *Flask-Slack-Events*:
 
@@ -111,8 +111,8 @@ signals.event_received
     Receiver: ``f(sender, event, **extra)``
 
 
-Handlers
---------
+SlackManager Handlers
+---------------------
 
 The following handlers are used internally by *Flask-Slack-Events*:
 
