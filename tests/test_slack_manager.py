@@ -45,7 +45,7 @@ class RouteTests(JSONTestCase, EventTestCase):
         self.assertEqual(response.status_code, 204)
 
         compare_digest_mock.assert_called()
-        signal_mock.assert_called_with(current_app, event=self.event)
+        signal_mock.assert_called_once_with(current_app, event=self.event)
 
 
 class OnTests(SlackManagerTestCase):
@@ -65,7 +65,7 @@ class UnauthorizedTests(SlackManagerTestCase):
                 self.slack_manager.unauthorized()
 
         self.assertEqual(http_error.exception.code, 401)
-        signal_mock.assert_called_with(current_app)
+        signal_mock.assert_called_once_with(current_app)
 
     def test_unauthorized_handler(self):
         handler_mock = Mock()
@@ -74,8 +74,8 @@ class UnauthorizedTests(SlackManagerTestCase):
         with catch_signal(signals.request_unauthorized) as signal_mock:
             self.slack_manager.unauthorized()
 
-        handler_mock.assert_called_with()
-        signal_mock.assert_called_with(current_app)
+        handler_mock.assert_called_once_with()
+        signal_mock.assert_called_once_with(current_app)
 
 
 class ExpiredEventTests(SlackManagerTestCase):
@@ -85,7 +85,7 @@ class ExpiredEventTests(SlackManagerTestCase):
             _, status_code = self.slack_manager.expired_event()
 
         self.assertEqual(status_code, 403)
-        signal_mock.assert_called_with(current_app)
+        signal_mock.assert_called_once_with(current_app)
 
     def test_expired_event_handler(self):
         handler_mock = Mock()
@@ -94,8 +94,8 @@ class ExpiredEventTests(SlackManagerTestCase):
         with catch_signal(signals.expired_event) as signal_mock:
             self.slack_manager.expired_event()
 
-        handler_mock.assert_called_with()
-        signal_mock.assert_called_with(current_app)
+        handler_mock.assert_called_once_with()
+        signal_mock.assert_called_once_with(current_app)
 
 
 class InvalidSignatureTests(SlackManagerTestCase):
@@ -105,7 +105,7 @@ class InvalidSignatureTests(SlackManagerTestCase):
             _, status_code = self.slack_manager.invalid_signature()
 
         self.assertEqual(status_code, 403)
-        signal_mock.assert_called_with(current_app)
+        signal_mock.assert_called_once_with(current_app)
 
     def test_invalid_signature_handler(self):
         handler_mock = Mock()
@@ -114,8 +114,8 @@ class InvalidSignatureTests(SlackManagerTestCase):
         with catch_signal(signals.invalid_signature) as signal_mock:
             self.slack_manager.invalid_signature()
 
-        handler_mock.assert_called_with()
-        signal_mock.assert_called_with(current_app)
+        handler_mock.assert_called_once_with()
+        signal_mock.assert_called_once_with(current_app)
 
 
 class DispatchEventTests(EventTestCase):
@@ -126,7 +126,7 @@ class DispatchEventTests(EventTestCase):
 
         self.slack_manager.dispatch_event(self.event)
 
-        handler_mock.assert_called_with(current_app, self.event)
+        handler_mock.assert_called_once_with(current_app, self.event)
 
     def test_dispatch_event_handler(self):
         handler_mock = Mock()
@@ -138,4 +138,4 @@ class DispatchEventTests(EventTestCase):
         self.slack_manager.dispatch_event(self.event)
 
         handler_mock.assert_not_called()
-        dispatcher_mock.assert_called_with(self.event, [handler_mock])
+        dispatcher_mock.assert_called_once_with(self.event, [handler_mock])
