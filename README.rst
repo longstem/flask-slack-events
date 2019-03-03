@@ -19,14 +19,14 @@ Install last stable version from Pypi::
    :target: https://pypi.python.org/pypi/flask-slack-events
    :alt: Pypi
 
-.. |Build Status| image:: https://travis-ci.org/flavors/flask-slack-events.svg?branch=master
-   :target: https://travis-ci.org/flavors/flask-slack-events
+.. |Build Status| image:: https://travis-ci.org/longstem/flask-slack-events.svg?branch=master
+   :target: https://travis-ci.org/longstem/flask-slack-events
    :alt: Build Status
 
-.. |Codecov| image:: https://img.shields.io/codecov/c/github/flavors/flask-slack-events.svg
-   :target: https://codecov.io/gh/flavors/flask-slack-events
+.. |Codecov| image:: https://img.shields.io/codecov/c/github/longstem/flask-slack-events.svg
+   :target: https://codecov.io/gh/longstem/flask-slack-events
    :alt: Codecov
 
 .. |Code Climate| image:: https://api.codeclimate.com/v1/badges/c79a185d546f7e34fdd6/maintainability
-   :target: https://codeclimate.com/github/flavors/flask-slack-events
+   :target: https://codeclimate.com/github/longstem/flask-slack-events
    :alt: Codeclimate
