@@ -23,20 +23,24 @@ class SlackManager:
         if app is not None:
             self.init_app(app)
 
+    @slack_event_required
+    def _view_func(self, *args, **kwargs):
+        event = request.get_json()['event']
+        current_app_object = current_app._get_current_object()
+
+        signals.event_received.send(current_app_object, event=event)
+        self.dispatch_event(event)
+        return '', 204
+
     def init_app(self, app, blueprint=None):
         app.slack_manager = self
-        events_url = app.config.get('SLACK_EVENTS_URL', '/slack/events')
-        route = (blueprint or app).route
+        route_url = app.config.get('SLACK_EVENTS_URL', '/slack/events')
 
-        @route(events_url, methods=['POST'], endpoint='slack_events')
-        @slack_event_required
-        def events():
-            event = request.get_json()['event']
-            current_app_object = current_app._get_current_object()
-
-            signals.event_received.send(current_app_object, event=event)
-            current_app.slack_manager.dispatch_event(event)
-            return '', 204
+        (blueprint or app).add_url_rule(
+            route_url,
+            endpoint='slack_events',
+            view_func=self._view_func,
+            methods=['POST'])
 
     def on(self, event_type):
         def decorator(f):
