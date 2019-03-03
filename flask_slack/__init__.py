@@ -2,4 +2,4 @@ from .slack_manager import SlackManager
 
 __all__ = ['SlackManager']
 
-__version__ = 'v0.0.1a1'
+__version__ = 'v0.0.1'
