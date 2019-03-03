@@ -1,4 +1,5 @@
 import time
+import unittest
 from unittest.mock import patch
 
 import pytest
@@ -6,11 +7,9 @@ from werkzeug.exceptions import Unauthorized
 
 from flask_slack import decorators
 
-from .testcases import JSONTestCase
 
-
-@pytest.mark.usefixtures('config')
-class SlackSignatureRequiredTests(JSONTestCase):
+@pytest.mark.usefixtures('client_class', 'config')
+class SlackSignatureRequiredTests(unittest.TestCase):
 
     @patch('hmac.compare_digest', unsafe=True)
     def test_slack_event_required(self, compare_digest_mock):
@@ -61,7 +60,8 @@ class SlackSignatureRequiredTests(JSONTestCase):
         compare_digest_mock.assert_called()
 
 
-class SlackChallengeValidationTests(JSONTestCase):
+@pytest.mark.usefixtures('client_class')
+class SlackChallengeValidationTests(unittest.TestCase):
 
     def test_slack_challenge_validation(self):
         self.client.post('/', json={'challenge': True})

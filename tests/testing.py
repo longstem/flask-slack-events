@@ -1,11 +1,9 @@
 import json
-import unittest
 
-import pytest
+from flask.testing import FlaskClient
 
 
-@pytest.mark.usefixtures('client_class')
-class JSONTestCase(unittest.TestCase):
+class JSONTestClient(FlaskClient):
 
     def open(self, *args, **kwargs):
         if 'json' in kwargs:
