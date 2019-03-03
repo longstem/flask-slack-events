@@ -15,6 +15,179 @@ Install last stable version from Pypi::
     pip install flask-slack-events
 
 
+Create a Slack bot user
+-----------------------
+
+See the `Slack's documentation <https://api.slack.com/bot-users#getting-started>`_ for further guidance on creating your bot (**step 1**).
+
+Within the *Basic Information* about your application, copy the **Signing Secret** necessary to `verify requests from Slack <https://api.slack.com/docs/verifying-requests-from-slack>`_.
+
+..  image:: https://user-images.githubusercontent.com/5514990/53696736-cfde0e00-3dfc-11e9-9aeb-23d184f8c600.png
+    :alt: Signing Secret
+
+
+Configure your Application
+--------------------------
+
+You should create a ``SlackManager`` object within your application::
+
+    slack_manager = SlackManager()
+
+
+Once the actual application object has been created, you can configure it for *SlackManager* object with::
+
+    slack_manager.init_app(app)
+
+`Configure your application object <http://flask.pocoo.org/docs/1.0/config/#configuration-basics>`_ updating the ``SLACK_SIGNING_SECRET`` key with the value obtained in the previous **step 1**::
+
+    app.config['SLACK_SIGNING_SECRET'] = '<your Signing Secret>'
+
+
+Configure your Slack Bot
+------------------------
+
+Continue with the `Slacks's documentation <https://api.slack.com/bot-users#setup-events-api>`_ to setting up the Events API (**step 2**) and enter the URL to receive the subscriptions joining your host and the relative path ``/slack/events``:
+
+..  image:: https://user-images.githubusercontent.com/5514990/53696747-e5533800-3dfc-11e9-8cef-4fd13d06e6ef.png
+    :alt: Enable Event
+
+
+Finally, install your bot to a workspace (**step 3**).
+
+
+How it Works
+------------
+
+Now in order to subscribe to `Slack Events <https://api.slack.com/events>`_, use the ``SlackManager.on`` decorator::
+
+    @slack_manager.on('app_mention')
+    def app_mention(sender, event):
+        # Subscribe to only the message events that mention your bot
+
+
+Dispatch Events Asynchronously
+------------------------------
+
+Some event handlers can delay the execution of another, to avoid this you can configure the event dispatcher and call handlers asynchronously::
+
+    @slack_manager.dispatch_event_handler
+    def event_dispatcher(event, handlers):
+        for handler in handlers:
+            task(handler)(event)
+
+
+Signals
+-------
+
+The following signals are sended internally by *Flask-Slack-Events*:
+
+signals.request_unauthorized
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    Sent when the request received is unauthorized
+
+    Receiver: ``f(sender, **extra)``
+
+signals.expired_event
+~~~~~~~~~~~~~~~~~~~~~
+
+    Sent when the event has expired according to the value of ``SLACK_EVENT_EXPIRATION_DELTA`` and the HTTP header ``X-Slack-Request-Timestamp`` received
+
+    Receiver: ``f(sender, **extra)``
+
+signals.invalid_signature
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    Sent when the signature included within the HTTP header ``X-Slack-Signature`` is invalid
+
+    Receiver: ``f(sender, **extra)``
+
+
+signals.event_received
+~~~~~~~~~~~~~~~~~~~~~~
+
+    Sent when an event has been received
+
+    Receiver: ``f(sender, event, **extra)``
+
+
+Handlers
+--------
+
+The following handlers are used internally by *Flask-Slack-Events*:
+
+SlackManager.unauthorized_handler
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    Called to handle an unauthorized request
+
+    Handler: ``f()``
+
+    Default: ``SlackManager.unauthorized()``
+
+SlackManager.expired_event_handler
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    Called to handle an expired event
+
+    Handler: ``f()``
+
+    Default: ``SlackManager.expired_event()``
+
+SlackManager.invalid_signature_handler
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    Called to handle a request with an invalid signature
+
+    Handler: ``f()``
+
+    Default: ``SlackManager.invalid_signature()``
+
+
+SlackManager.dispatch_event_handler
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    Called to dispatch the event to all handlers connected with ``@SlackManager.on(event_type)``
+
+    Handler: ``f(event, handlers)``
+
+    Default: ``SlackManager.dispatch_event(event, handlers)``
+
+
+Configuration
+-------------
+
+The following configuration values are used internally by *Flask-Slack-Events*:
+
+SLACK_SIGNING_SECRET
+~~~~~~~~~~~~~~~~~~~~
+
+    Signing Secret to verify whether requests from *Slack* are authentic
+
+    Default: ``''``
+
+SLACK_EVENTS_URL
+~~~~~~~~~~~~~~~~
+
+    URL rule that is used to register the *Subscription View*
+
+    Default: ``/slack/events``
+
+SLACK_EVENT_EXPIRATION_DELTA
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    Timedelta added to ``time.time()`` to set the expiration time of each event
+    If the value is ``None`` then the event never expires
+
+    Default: ``timedelta(seconds=60 * 5)`` (5 minutes)
+
+
+Marvin the Paranoid Android
+---------------------------
+
+`Marvin <https://github.com/longstem/marvin>`_ is a *Flask* layout that includes this package and makes it super easy to development, build and deploy on *AWS Lambda* + *API Gateway*.  
+
+
 .. |Pypi| image:: https://img.shields.io/pypi/v/flask-slack-events.svg
    :target: https://pypi.python.org/pypi/flask-slack-events
    :alt: Pypi
