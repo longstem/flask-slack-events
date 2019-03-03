@@ -1,6 +1,5 @@
 from collections import defaultdict
 from datetime import timedelta
-from functools import wraps
 
 from flask import abort, current_app, request
 
@@ -16,9 +15,8 @@ class SlackManager:
         self.invalid_signature_callback = None
         self.dispatch_event_callback = None
 
-        self.default_event_expiration = timedelta(seconds=60 * 5)
-
         self._event_handlers = defaultdict(list)
+        self.default_event_expiration = timedelta(seconds=60 * 5)
 
         if app is not None:
             self.init_app(app)
@@ -45,11 +43,6 @@ class SlackManager:
     def on(self, event_type):
         def decorator(f):
             self._event_handlers[event_type].append(f)
-
-            @wraps(f)
-            def decorated_handler(*args, **kwargs):
-                f(*args, **kwargs)
-            return decorated_handler
         return decorator
 
     def unauthorized(self):
