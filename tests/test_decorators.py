@@ -6,7 +6,6 @@ from werkzeug.exceptions import Unauthorized
 
 from flask_slack import decorators
 
-
 from .testcases import JSONTestCase
 
 
