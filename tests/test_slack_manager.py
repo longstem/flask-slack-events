@@ -2,11 +2,12 @@ import time
 import unittest
 from unittest.mock import Mock, patch
 
-from flask import current_app, url_for
+from flask import Flask, current_app, url_for
 
 import pytest
 from werkzeug.exceptions import Unauthorized
 
+import flask_slack
 from flask_slack import signals
 
 from .context_managers import catch_signal
@@ -24,6 +25,15 @@ class EventTestCase(SlackManagerTestCase):
     def setUp(self):
         super().setUp()
         self.event = {'type': 'test'}
+
+
+class InitTests(unittest.TestCase):
+
+    def test_init(self):
+        app = Flask(__name__)
+        slack_manager = flask_slack.SlackManager(app)
+
+        self.assertEqual(app.slack_manager, slack_manager)
 
 
 @pytest.mark.usefixtures('client_class')
