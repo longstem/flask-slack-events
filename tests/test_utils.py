@@ -48,7 +48,7 @@ class EventHasExpiredTests(unittest.TestCase):
 @pytest.mark.usefixtures('config')
 class CompareSignatureTests(unittest.TestCase):
 
-    @patch('hmac.compare_digest')
+    @patch('hmac.compare_digest', unsafe=True)
     def test_compare_signatured(self, compare_digest_mock):
         utils.compare_signature('-', '-')
         compare_digest_mock.assert_called()

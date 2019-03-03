@@ -29,7 +29,7 @@ class EventTestCase(SlackManagerTestCase):
 
 class RouteTests(JSONTestCase, EventTestCase):
 
-    @patch('hmac.compare_digest')
+    @patch('hmac.compare_digest', unsafe=True)
     def test_route(self, compare_digest_mock):
         headers = {
             'X-Slack-Signature': '-',

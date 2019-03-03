@@ -13,7 +13,7 @@ from .testcases import JSONTestCase
 @pytest.mark.usefixtures('config')
 class SlackSignatureRequiredTests(JSONTestCase):
 
-    @patch('hmac.compare_digest')
+    @patch('hmac.compare_digest', unsafe=True)
     def test_slack_event_required(self, compare_digest_mock):
         headers = {
             'X-Slack-Signature': '-',
@@ -33,7 +33,7 @@ class SlackSignatureRequiredTests(JSONTestCase):
 
         self.assertEqual(http_error.exception.code, 401)
 
-    @patch('hmac.compare_digest')
+    @patch('hmac.compare_digest', unsafe=True)
     def test_expired_event(self, compare_digest_mock):
         headers = {
             'X-Slack-Signature': '-',
@@ -47,7 +47,7 @@ class SlackSignatureRequiredTests(JSONTestCase):
         self.assertEqual(status_code, 403)
         compare_digest_mock.assert_not_called()
 
-    @patch('hmac.compare_digest', return_value=False)
+    @patch('hmac.compare_digest', unsafe=True, return_value=False)
     def test_invalid_signature(self, compare_digest_mock):
         headers = {
             'X-Slack-Signature': '-',
