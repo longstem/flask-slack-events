@@ -27,7 +27,7 @@ setup(
     author='mongkok',
     author_email='domake.io@gmail.com',
     maintainer='mongkok',
-    url='https://github.com/flavors/flask-slack-events',
+    url='https://github.com/longstem/flask-slack-events',
     packages=find_packages(exclude=['tests*']),
     install_requires=['Flask>=0.8'],
     classifiers=[
