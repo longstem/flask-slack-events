@@ -79,7 +79,7 @@ Some event handlers can delay the execution of another, to avoid this you can co
 .. code-block:: python
 
     @slack_manager.dispatch_event_handler
-    def event_dispatcher(event, handlers):
+    def async_event_dispatcher(event, handlers):
         for handler in handlers:
             task(handler)(event)
 
