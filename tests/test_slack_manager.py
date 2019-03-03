@@ -10,6 +10,7 @@ from werkzeug.exceptions import Unauthorized
 from flask_slack import signals
 
 from .context_managers import catch_signal
+from .testcases import JSONTestCase
 
 
 @pytest.mark.usefixtures('config')
@@ -26,8 +27,7 @@ class EventTestCase(SlackManagerTestCase):
         self.event = {'type': 'test'}
 
 
-@pytest.mark.usefixtures('client_class')
-class RouteTests(EventTestCase):
+class RouteTests(JSONTestCase, EventTestCase):
 
     @patch('hmac.compare_digest')
     def test_route(self, compare_digest_mock):
