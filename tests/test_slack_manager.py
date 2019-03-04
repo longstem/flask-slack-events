@@ -128,6 +128,18 @@ class InvalidSignatureTests(SlackManagerTestCase):
         signal_mock.assert_called_once_with(current_app)
 
 
+class ContextProcessorTests(EventDataTestCase):
+
+    def test_context_processor(self):
+        processor_mock = Mock(return_value=dict(test=True))
+
+        self.slack_manager.context_processor(processor_mock)
+        context = self.slack_manager.get_context(self.data)
+
+        self.assertTrue(context['test'])
+        processor_mock.assert_called_once_with(self.data)
+
+
 class DispatchEventTests(EventDataTestCase):
 
     def test_dispatch_event(self):

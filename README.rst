@@ -76,6 +76,21 @@ Now in order to subscribe to `Slack Events <https://api.slack.com/events>`_, use
             text=f":robot_face: Hello <@{event['user']}>!")
 
 
+Context Processors
+------------------
+
+To inject new variables automatically into the context of a handler, context processors exist in *Flask-Slack-Events*.
+
+A context processor is a function that returns a dictionary:
+
+.. code-block:: python
+
+    @slack_manager.context_processor
+    def context_processor(data):
+        return dict(my_bot_id='UAZ02BCBH')
+
+The injected variables will be sent as an ``extra`` argument for each event handler ``f(sender, data, **extra)``.
+
 
 Dispatch Events Asynchronously
 ------------------------------
@@ -161,7 +176,7 @@ SlackManager.invalid_signature_handler
 SlackManager.dispatch_event_handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Called to dispatch the event to all handlers connected with ``@SlackManager.on(event_type)``
+    Called to dispatch the event to all handlers connected with ``SlackManager.on(event_type)`` decorator
 
     Handler: ``f(sender, data, handlers, **extra)``
 
@@ -199,7 +214,7 @@ SLACK_EVENT_EXPIRATION_DELTA
 Marvin the Paranoid Android
 ---------------------------
 
-`Marvin <https://github.com/longstem/marvin>`_ is a *Flask* layout that includes this package and makes it super easy to development, build and deploy on *AWS Lambda* + *API Gateway*.
+`Marvin <https://github.com/longstem/marvin>`_ is a **Slack Bot layout** for *Flask* to develop [*Slack* Event](https://api.slack.com/events) handlers and deploy on *AWS Lambda* + *API Gateway*
 
 
 .. |Pypi| image:: https://img.shields.io/pypi/v/flask-slack-events.svg

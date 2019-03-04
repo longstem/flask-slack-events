@@ -15,7 +15,9 @@ class SlackManager:
         self.invalid_signature_callback = None
         self.dispatch_event_callback = None
 
+        self._context_processors = []
         self._event_handlers = defaultdict(list)
+
         self.default_event_expiration = timedelta(seconds=60 * 5)
 
         if app is not None:
@@ -68,15 +70,26 @@ class SlackManager:
             return self.invalid_signature_callback()
         return errors.forbidden('Invalid signature')
 
+    def context_processor(self, f):
+        self._context_processors.append(f)
+        return f
+
+    def get_context(self, data):
+        context = {}
+        for processor in self._context_processors:
+            context.update(processor(data))
+        return context
+
     def dispatch_event(self, data):
         sender = current_app._get_current_object()
         handlers = self._event_handlers[data['event']['type']]
+        context = self.get_context(data)
 
         if self.dispatch_event_callback is not None:
-            self.dispatch_event_callback(sender, data, handlers)
+            self.dispatch_event_callback(sender, data, handlers, **context)
         else:
             for handler in handlers:
-                handler(sender, data)
+                handler(sender, data, **context)
 
     def unauthorized_handler(self, callback):
         self.unauthorized_callback = callback
