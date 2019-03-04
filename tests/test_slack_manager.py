@@ -132,19 +132,18 @@ class DispatchEventTests(EventDataTestCase):
 
     def test_dispatch_event(self):
         handler_mock = Mock()
-        self.slack_manager.on('test')(handler_mock)
 
+        self.slack_manager.on('test')(handler_mock)
         self.slack_manager.dispatch_event(self.data)
 
         handler_mock.assert_called_once_with(current_app, self.data)
 
     def test_dispatch_event_handler(self):
         handler_mock = Mock()
-        self.slack_manager.on('test')(handler_mock)
-
         dispatcher_mock = Mock()
-        self.slack_manager.dispatch_event_handler(dispatcher_mock)
 
+        self.slack_manager.on('test')(handler_mock)
+        self.slack_manager.dispatch_event_handler(dispatcher_mock)
         self.slack_manager.dispatch_event(self.data)
 
         handler_mock.assert_not_called()
