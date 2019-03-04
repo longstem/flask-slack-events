@@ -61,7 +61,7 @@ class RouteTests(EventDataTestCase):
 class OnTests(SlackManagerTestCase):
 
     def test_on(self):
-        current_app.slack_manager.on('test')(True)
+        self.slack_manager.on('test')(True)
 
         handler = self.slack_manager._event_handlers['test'][0]
         self.assertTrue(handler)
@@ -79,7 +79,7 @@ class UnauthorizedTests(SlackManagerTestCase):
 
     def test_unauthorized_handler(self):
         handler_mock = Mock()
-        current_app.slack_manager.unauthorized_handler(handler_mock)
+        self.slack_manager.unauthorized_handler(handler_mock)
 
         with catch_signal(signals.request_unauthorized) as signal_mock:
             self.slack_manager.unauthorized()
@@ -99,7 +99,7 @@ class ExpiredEventTests(SlackManagerTestCase):
 
     def test_expired_event_handler(self):
         handler_mock = Mock()
-        current_app.slack_manager.expired_event_handler(handler_mock)
+        self.slack_manager.expired_event_handler(handler_mock)
 
         with catch_signal(signals.expired_event) as signal_mock:
             self.slack_manager.expired_event()
@@ -119,7 +119,7 @@ class InvalidSignatureTests(SlackManagerTestCase):
 
     def test_invalid_signature_handler(self):
         handler_mock = Mock()
-        current_app.slack_manager.invalid_signature_handler(handler_mock)
+        self.slack_manager.invalid_signature_handler(handler_mock)
 
         with catch_signal(signals.invalid_signature) as signal_mock:
             self.slack_manager.invalid_signature()
@@ -132,7 +132,7 @@ class DispatchEventTests(EventDataTestCase):
 
     def test_dispatch_event(self):
         handler_mock = Mock()
-        current_app.slack_manager.on('test')(handler_mock)
+        self.slack_manager.on('test')(handler_mock)
 
         self.slack_manager.dispatch_event(self.data)
 
@@ -140,10 +140,10 @@ class DispatchEventTests(EventDataTestCase):
 
     def test_dispatch_event_handler(self):
         handler_mock = Mock()
-        current_app.slack_manager.on('test')(handler_mock)
+        self.slack_manager.on('test')(handler_mock)
 
         dispatcher_mock = Mock()
-        current_app.slack_manager.dispatch_event_handler(dispatcher_mock)
+        self.slack_manager.dispatch_event_handler(dispatcher_mock)
 
         self.slack_manager.dispatch_event(self.data)
 
