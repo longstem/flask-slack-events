@@ -29,17 +29,17 @@ Within the *Basic Information* about your application, copy the **Signing Secret
 Configure your Application
 --------------------------
 
-`Configure your application object <http://flask.pocoo.org/docs/1.0/config/#configuration-basics>`_ updating the ``SLACK_SIGNING_SECRET`` key with the value obtained in the previous **step 1**:
-
-.. code-block:: python
-
-    app.config['SLACK_SIGNING_SECRET'] = '<your Signing Secret>'
-
 You should create a ``SlackManager`` object within your application:
 
 .. code-block:: python
 
     slack_manager = SlackManager()
+
+`Configure your application object <http://flask.pocoo.org/docs/1.0/config/#configuration-basics>`_ updating the ``SLACK_SIGNING_SECRET`` key with the value obtained in the previous **step 1**:
+
+.. code-block:: python
+
+    app.config['SLACK_SIGNING_SECRET'] = '<your Signing Secret>'
 
 Once the actual application object has been created, you can configure it for *SlackManager* object with::
 
@@ -64,9 +64,17 @@ Now in order to subscribe to `Slack Events <https://api.slack.com/events>`_, use
 
 .. code-block:: python
 
+    # Reply to only the message events that mention your bot
+
     @slack_manager.on('app_mention')
-    def app_mention(sender, data, **extra):
-        # Subscribe to only the message events that mention your bot
+    def reply_to_app_mention(sender, data, **extra):
+        event = data['event']
+
+        slack_client.api_call(
+            'chat.postMessage',
+            channel=event['channel'],
+            text=f":robot_face: Hello <@{event['user']}>!")
+
 
 
 Dispatch Events Asynchronously
