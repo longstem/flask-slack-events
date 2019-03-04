@@ -29,22 +29,21 @@ Within the *Basic Information* about your application, copy the **Signing Secret
 Configure your Application
 --------------------------
 
+`Configure your application object <http://flask.pocoo.org/docs/1.0/config/#configuration-basics>`_ updating the ``SLACK_SIGNING_SECRET`` key with the value obtained in the previous **step 1**:
+
+.. code-block:: python
+
+    app.config['SLACK_SIGNING_SECRET'] = '<your Signing Secret>'
+
 You should create a ``SlackManager`` object within your application:
 
 .. code-block:: python
 
     slack_manager = SlackManager()
 
-
 Once the actual application object has been created, you can configure it for *SlackManager* object with::
 
     slack_manager.init_app(app)
-
-`Configure your application object <http://flask.pocoo.org/docs/1.0/config/#configuration-basics>`_ updating the ``SLACK_SIGNING_SECRET`` key with the value obtained in the previous **step 1**:
-
-.. code-block:: python
-
-    app.config['SLACK_SIGNING_SECRET'] = '<your Signing Secret>'
 
 
 Configure your Slack Bot
@@ -54,7 +53,6 @@ Continue with the `Slacks's documentation <https://api.slack.com/bot-users#setup
 
 ..  image:: https://user-images.githubusercontent.com/5514990/53696747-e5533800-3dfc-11e9-8cef-4fd13d06e6ef.png
     :alt: Enable Event
-
 
 Finally, install your bot to a workspace (**step 3**).
 
