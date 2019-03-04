@@ -64,7 +64,7 @@ class SlackSignatureRequiredTests(unittest.TestCase):
 class SlackChallengeValidationTests(unittest.TestCase):
 
     def test_slack_challenge_validation(self):
-        self.client.post('/', json=dict(challenge=True))
+        self.client.post('/', json={'challenge': True})
 
         result = decorators.slack_challenge_validation(bool)()
 

@@ -24,7 +24,7 @@ class EventDataTestCase(SlackManagerTestCase):
 
     def setUp(self):
         super().setUp()
-        self.data = dict(event=dict(type='test'))
+        self.data = {'event': {'type': 'test'}}
 
 
 class InitTests(unittest.TestCase):
@@ -131,7 +131,7 @@ class InvalidSignatureTests(SlackManagerTestCase):
 class ContextProcessorTests(EventDataTestCase):
 
     def test_context_processor(self):
-        processor_mock = Mock(return_value=dict(test=True))
+        processor_mock = Mock(return_value={'test': True})
 
         self.slack_manager.context_processor(processor_mock)
         context = self.slack_manager.get_context(self.data)
