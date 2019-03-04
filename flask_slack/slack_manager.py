@@ -32,10 +32,10 @@ class SlackManager:
 
     def init_app(self, app, blueprint=None):
         app.slack_manager = self
-        route_url = app.config.get('SLACK_EVENTS_URL', '/slack/events')
+        url_rule = app.config.get('SLACK_EVENTS_URL', '/slack/events')
 
         (blueprint or app).add_url_rule(
-            route_url,
+            url_rule,
             endpoint='slack_events',
             view_func=self._view_func,
             methods=['POST'])
