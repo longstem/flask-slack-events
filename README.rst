@@ -214,7 +214,7 @@ SLACK_EVENT_EXPIRATION_DELTA
 Marvin the Paranoid Android
 ---------------------------
 
-`Marvin <https://github.com/longstem/marvin>`_ is a **Slack Bot layout** for *Flask* to develop [*Slack* Event](https://api.slack.com/events) handlers and deploy on *AWS Lambda* + *API Gateway*
+`Marvin <https://github.com/longstem/marvin>`_ is a **Slack Bot layout** for *Flask* to develop `Slack Event <https://api.slack.com/events>`_ handlers and deploy on *AWS Lambda* + *API Gateway*
 
 
 .. |Pypi| image:: https://img.shields.io/pypi/v/flask-slack-events.svg
