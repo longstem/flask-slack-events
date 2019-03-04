@@ -43,6 +43,7 @@ class SlackManager:
     def on(self, event_type):
         def decorator(f):
             self._event_handlers[event_type].append(f)
+            return f
         return decorator
 
     def unauthorized(self):
