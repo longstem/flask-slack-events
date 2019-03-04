@@ -67,7 +67,7 @@ Now in order to subscribe to `Slack Events <https://api.slack.com/events>`_, use
 .. code-block:: python
 
     @slack_manager.on('app_mention')
-    def app_mention(sender, event):
+    def app_mention(sender, data, **extra):
         # Subscribe to only the message events that mention your bot
 
 
@@ -79,9 +79,9 @@ Some event handlers can delay the execution of another, to avoid this you can co
 .. code-block:: python
 
     @slack_manager.dispatch_event_handler
-    def async_event_dispatcher(event, handlers):
+    def async_event_dispatcher(sender, data, handlers, **extra):
         for handler in handlers:
-            task(handler)(event)
+            task(handler)(data, **extra)
 
 
 Subscribe to Signals
@@ -116,7 +116,7 @@ signals.event_received
 
     Sent when an event has been received
 
-    Receiver: ``f(sender, event, **extra)``
+    Receiver: ``f(sender, data, **extra)``
 
 
 SlackManager Handlers
@@ -157,9 +157,9 @@ SlackManager.dispatch_event_handler
 
     Called to dispatch the event to all handlers connected with ``@SlackManager.on(event_type)``
 
-    Handler: ``f(event, handlers)``
+    Handler: ``f(sender, data, handlers, **extra)``
 
-    Default: ``SlackManager.dispatch_event(event, handlers)``
+    Default: ``SlackManager.dispatch_event(data)``
 
 
 Configuration
@@ -193,7 +193,7 @@ SLACK_EVENT_EXPIRATION_DELTA
 Marvin the Paranoid Android
 ---------------------------
 
-`Marvin <https://github.com/longstem/marvin>`_ is a *Flask* layout that includes this package and makes it super easy to development, build and deploy on *AWS Lambda* + *API Gateway*.  
+`Marvin <https://github.com/longstem/marvin>`_ is a *Flask* layout that includes this package and makes it super easy to development, build and deploy on *AWS Lambda* + *API Gateway*.
 
 
 .. |Pypi| image:: https://img.shields.io/pypi/v/flask-slack-events.svg

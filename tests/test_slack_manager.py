@@ -20,11 +20,11 @@ class SlackManagerTestCase(unittest.TestCase):
         self.slack_manager = current_app.slack_manager
 
 
-class EventTestCase(SlackManagerTestCase):
+class EventDataTestCase(SlackManagerTestCase):
 
     def setUp(self):
         super().setUp()
-        self.event = {'type': 'test'}
+        self.data = dict(event=dict(type='test'))
 
 
 class InitTests(unittest.TestCase):
@@ -37,7 +37,7 @@ class InitTests(unittest.TestCase):
 
 
 @pytest.mark.usefixtures('client_class')
-class RouteTests(EventTestCase):
+class RouteTests(EventDataTestCase):
 
     @patch('hmac.compare_digest', unsafe=True)
     def test_route(self, compare_digest_mock):
@@ -50,12 +50,12 @@ class RouteTests(EventTestCase):
             response = self.client.post(
                 url_for('slack_events'),
                 headers=headers,
-                json={'event': self.event})
+                json=self.data)
 
         self.assertEqual(response.status_code, 204)
 
         compare_digest_mock.assert_called()
-        signal_mock.assert_called_once_with(current_app, event=self.event)
+        signal_mock.assert_called_once_with(current_app, data=self.data)
 
 
 class OnTests(SlackManagerTestCase):
@@ -128,15 +128,15 @@ class InvalidSignatureTests(SlackManagerTestCase):
         signal_mock.assert_called_once_with(current_app)
 
 
-class DispatchEventTests(EventTestCase):
+class DispatchEventTests(EventDataTestCase):
 
     def test_dispatch_event(self):
         handler_mock = Mock()
         current_app.slack_manager.on('test')(handler_mock)
 
-        self.slack_manager.dispatch_event(self.event)
+        self.slack_manager.dispatch_event(self.data)
 
-        handler_mock.assert_called_once_with(current_app, self.event)
+        handler_mock.assert_called_once_with(current_app, self.data)
 
     def test_dispatch_event_handler(self):
         handler_mock = Mock()
@@ -145,7 +145,9 @@ class DispatchEventTests(EventTestCase):
         dispatcher_mock = Mock()
         current_app.slack_manager.dispatch_event_handler(dispatcher_mock)
 
-        self.slack_manager.dispatch_event(self.event)
+        self.slack_manager.dispatch_event(self.data)
 
         handler_mock.assert_not_called()
-        dispatcher_mock.assert_called_once_with(self.event, [handler_mock])
+
+        dispatcher_mock.assert_called_once_with(
+            current_app, self.data, [handler_mock])

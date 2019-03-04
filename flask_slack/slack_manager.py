@@ -23,11 +23,11 @@ class SlackManager:
 
     @slack_event_required
     def _view_func(self, *args, **kwargs):
-        event = request.get_json()['event']
+        data = request.get_json()
         current_app_object = current_app._get_current_object()
 
-        signals.event_received.send(current_app_object, event=event)
-        self.dispatch_event(event)
+        signals.event_received.send(current_app_object, data=data)
+        self.dispatch_event(data)
         return '', 204
 
     def init_app(self, app, blueprint=None):
@@ -67,14 +67,15 @@ class SlackManager:
             return self.invalid_signature_callback()
         return errors.forbidden('Invalid signature')
 
-    def dispatch_event(self, event):
-        handlers = current_app.slack_manager._event_handlers[event['type']]
+    def dispatch_event(self, data):
+        sender = current_app._get_current_object()
+        handlers = self._event_handlers[data['event']['type']]
 
         if self.dispatch_event_callback is not None:
-            self.dispatch_event_callback(event, handlers)
+            self.dispatch_event_callback(sender, data, handlers)
         else:
             for handler in handlers:
-                handler(current_app._get_current_object(), event)
+                handler(sender, data)
 
     def unauthorized_handler(self, callback):
         self.unauthorized_callback = callback
