@@ -69,11 +69,10 @@ Now in order to subscribe to `Slack Events <https://api.slack.com/events>`_, use
     @slack_manager.on('app_mention')
     def reply_to_app_mention(sender, data, **extra):
         event = data['event']
+        channel = event['channel']
+        text = f":robot_face: Hello <@{event['user']}>!"
 
-        slack_client.api_call(
-            'chat.postMessage',
-            channel=event['channel'],
-            text=f":robot_face: Hello <@{event['user']}>!")
+        slack_client.api_call('chat.postMessage', channel=channel, text=text)
 
 
 Context Processors
