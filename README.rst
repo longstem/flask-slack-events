@@ -94,14 +94,25 @@ The injected variables will be sent as an ``extra`` argument for each event hand
 Dispatch Events Asynchronously
 ------------------------------
 
-Some event handlers can delay the execution of another, to avoid this you can configure the event dispatcher and call handlers asynchronously:
+Some event handlers can delay the execution of another, to avoid this you can configure the event dispatcher and run handlers asynchronously:
 
 .. code-block:: python
 
+    import asyncio
+
+
     @slack_manager.dispatch_event_handler
     def async_event_dispatcher(sender, data, handlers, **extra):
-        for handler in handlers:
-            task(handler)(data, **extra)
+        coroutines = [h(sender, data, **extra) for h in handlers]
+        asyncio.run(asyncio.wait(coroutines))
+
+And design your event handlers as coroutines:
+
+.. code-block:: python
+
+    @slack_manager.on('app_mention')
+    async def reply_to_app_mention(sender, data, **extra):
+        # ...
 
 
 Subscribe to Signals
@@ -213,7 +224,7 @@ SLACK_EVENT_EXPIRATION_DELTA
 Marvin the Paranoid Android
 ---------------------------
 
-`Marvin <https://github.com/longstem/marvin>`_ is a **Slack Bot layout** for *Flask* to develop `Slack Event <https://api.slack.com/events>`_ handlers and deploy on *AWS Lambda* + *API Gateway*
+`Marvin <https://github.com/longstem/marvin>`_ is a **Slack Bot layout** for *Flask* and *Asyncio* to develop `Slack Event <https://api.slack.com/events>`_ handlers and deploy on *AWS Lambda* + *API Gateway*
 
 
 .. |Pypi| image:: https://img.shields.io/pypi/v/flask-slack-events.svg
